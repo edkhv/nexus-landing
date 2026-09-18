@@ -4,6 +4,11 @@ Fictional product landing for **NEXUS**, an agentic runtime for product teams.
 Built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4 and
 React Three Fiber + Drei. The page is written in Russian.
 
+- **Live:** https://nexus-landing-edkhv.vercel.app
+- **Repository:** https://github.com/edkhv/nexus-landing
+
+Every push to `main` deploys to production automatically.
+
 ## Run
 
 ```bash
