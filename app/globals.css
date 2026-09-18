@@ -15,11 +15,17 @@
   --color-violet-soft: #8b7cf6;
   --color-violet-deep: #4c3f8f;
 
+  /* Near-white with a cold cast, for headline ink */
+  --color-ink: #eef4fb;
+
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+    var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
   --font-mono:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Consolas, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 0.84, 0.28, 1);
 }
 
 @layer base {
@@ -27,11 +33,18 @@
     color-scheme: dark;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    scrollbar-color: #2b323d #06070a;
   }
 
   body {
     background-color: #06070a;
     color: #a9b6c8;
+  }
+
+  /* Mono labels are instrumentation: keep every digit on the same grid. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
 
   ::selection {
@@ -43,6 +56,25 @@
     outline: 2px solid #3fe0ff;
     outline-offset: 3px;
     border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #06070a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1d222b;
+    border: 3px solid #06070a;
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2b323d;
   }
 
   /* Motion is opt-in: one shared guard for CSS transitions and animations. */
@@ -58,5 +90,140 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  /* ------------------------------------------------------------ texture -- */
+
+  /*
+   * Film grain from an inline feTurbulence bitmap. Purely local: no request,
+   * no image file. Sits above the page but below the content.
+   */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+  }
+
+  /* Fine dotted field + coarse survey lines, faded out towards the edges. */
+  .tech-grid {
+    background-image:
+      radial-gradient(
+        circle at center,
+        rgb(148 163 184 / 0.1) 1px,
+        transparent 1.2px
+      ),
+      linear-gradient(to right, rgb(148 163 184 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(148 163 184 / 0.035) 1px, transparent 1px);
+    background-size:
+      28px 28px,
+      112px 112px,
+      112px 112px;
+    background-position: center center;
+  }
+
+  /* -------------------------------------------------------- type reveal -- */
+
+  /*
+   * Each headline line rises and wipes in. The wipe is a clip-path on the
+   * text itself rather than `overflow: hidden` on the frame, so descenders
+   * are never shaved by a tight line-height.
+   */
+  .reveal-line {
+    display: block;
+  }
+
+  .reveal-line > span {
+    display: block;
+  }
+
+  /* --------------------------------------------------------- enter anim -- */
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+      clip-path: inset(0 0 102% 0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      clip-path: inset(0 0 -35% 0);
+    }
+  }
+
+  @keyframes fade-rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes status-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgb(63 224 255 / 0.5);
+    }
+    50% {
+      opacity: 0.55;
+      box-shadow: 0 0 0 4px rgb(63 224 255 / 0);
+    }
+  }
+}
+
+/* ------------------------------------------------------------ motion -- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Orchestrated page load: hero elements rise in sequence on a --d delay. */
+  .rise {
+    animation: fade-rise 900ms var(--ease-out-expo) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .reveal-line > span {
+    animation: rise-in 1000ms var(--ease-out-expo) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* Cyan status lamp in the instrument strip. */
+  .status-lamp {
+    animation: status-pulse 2600ms ease-in-out infinite;
+  }
+
+  /*
+   * Scroll-driven section reveals. Uses the CSS view timeline, so the page
+   * needs no JavaScript to choreograph: browsers without support simply paint
+   * the content at rest, and anything already scrolled past resolves to its
+   * finished state rather than staying hidden.
+   */
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      --rs: 0%;
+      --re: 62%;
+
+      animation: fade-rise linear both;
+      animation-timeline: view();
+      animation-range: entry var(--rs) entry var(--re);
+    }
+  }
+}
+
+/* A printed page has no scrollport, so reveals must resolve to their end state. */
+@media print {
+  .rise,
+  .reveal-line > span,
+  [data-reveal] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
   }
 }
