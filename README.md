@@ -102,6 +102,22 @@ were subdivided once, and every face was set to smooth shading. The form is
 unchanged; only the tessellation is. That is 16 560 triangles instead of 3 740,
 which is what removes the faceted silhouette and the visible shading facets.
 
+## Build log warnings
+
+The Vercel build prints two warnings that are expected and harmless:
+
+- `npm warn deprecated eslint@9.39.5` — the 9.x line is end-of-life, but
+  ESLint 10 is not usable yet: `eslint-config-next` pulls
+  `eslint-plugin-react`, whose peer range stops at `^9.7` and which throws
+  `contextOrFilename.getFilename is not a function` on ESLint 10. Nothing in
+  the deployed bundle is affected — `next build` does not run linting since
+  Next 16, and ESLint is a dev dependency.
+- `npm warn allow-scripts … unrs-resolver` — npm 12 (the version in the Vercel
+  image) blocks dependency install scripts by default and reports what it
+  skipped. `unrs-resolver` is a transitive dependency of the lint toolchain and
+  its postinstall is only a fallback, so nothing needs to be approved; the
+  script is never reached during a deployment.
+
 ## Budget
 
 `public/models/ai-core.glb` is 247 KB (limit: 5 MB). The browser fetches nothing
