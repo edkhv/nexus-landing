@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  /* Dark graphite surfaces */
+  --color-graphite-950: #06070a;
+  --color-graphite-900: #0a0c11;
+  --color-graphite-850: #0e1117;
+  --color-graphite-800: #14181f;
+  --color-graphite-700: #1d222b;
+  --color-graphite-600: #2b323d;
+
+  /* Electric cyan + restrained violet */
+  --color-cyan-electric: #3fe0ff;
+  --color-cyan-deep: #0e7490;
+  --color-violet-soft: #8b7cf6;
+  --color-violet-deep: #4c3f8f;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #06070a;
+    color: #a9b6c8;
+  }
+
+  ::selection {
+    background-color: rgb(63 224 255 / 0.28);
+    color: #eef4fb;
+  }
+
+  :focus-visible {
+    outline: 2px solid #3fe0ff;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* Motion is opt-in: one shared guard for CSS transitions and animations. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
