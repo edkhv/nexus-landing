@@ -1,37 +1,37 @@
 import type { Metadata } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 
 /**
  * Both families are self-hosted by `next/font` at build time: the CSS and the
  * woff2 files land in `_next/static`, so the browser never talks to Google.
- * Archivo carries a `wdth` axis, which the hero uses at 112% for its
- * expanded, engineered headline.
+ * The page is Russian, so the `cyrillic` subset is loaded alongside `latin`;
+ * Manrope is a variable face, which gives the headline its 800 weight without
+ * a second file.
  */
-const archivo = Archivo({
-  subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-archivo",
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "NEXUS — One core. Every AI workflow.",
+  title: "NEXUS — одно ядро для любого AI-процесса",
   description:
-    "NEXUS is an agentic runtime for product teams: context, tools and checks around any model.",
+    "NEXUS — агентный рантайм для продуктовых команд: контекст, инструменты и проверки вокруг любой модели. Своя обвязка вместо чужого API.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
-      className={`h-full ${archivo.variable} ${jetbrainsMono.variable}`}
+      lang="ru"
+      className={`h-full ${manrope.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-full bg-graphite-950 font-sans antialiased">
         {children}

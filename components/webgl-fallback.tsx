@@ -8,7 +8,7 @@ import { Component, type ReactNode } from "react";
  * No animation: it reads as a static technical diagram.
  */
 export function AiCoreFallback({
-  note = "Static preview — the live 3D core needs WebGL.",
+  note = "Статичный вид — для живого 3D-ядра нужен WebGL.",
 }: {
   note?: string;
 }) {

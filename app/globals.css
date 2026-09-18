@@ -19,7 +19,7 @@
   --color-ink: #eef4fb;
 
   --font-sans:
-    var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
   --font-mono:
     var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo,
@@ -38,13 +38,20 @@
 
   body {
     background-color: #06070a;
-    color: #a9b6c8;
+    color: #9aa9bd;
+    letter-spacing: -0.005em;
   }
 
   /* Mono labels are instrumentation: keep every digit on the same grid. */
   .font-mono {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum" 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
 
   ::selection {
@@ -122,6 +129,207 @@
     background-position: center center;
   }
 
+  /*
+   * Page-wide depth. Two very wide, very slow light bodies behind everything:
+   * they keep the large graphite fields from reading as flat fills without
+   * costing a single request or a canvas.
+   */
+  .aurora {
+    background-image:
+      radial-gradient(
+        42rem 30rem at 78% 4%,
+        rgb(14 116 144 / 0.3),
+        transparent 62%
+      ),
+      radial-gradient(
+        36rem 28rem at 12% 44%,
+        rgb(76 63 143 / 0.28),
+        transparent 66%
+      ),
+      radial-gradient(
+        44rem 30rem at 62% 96%,
+        rgb(14 116 144 / 0.16),
+        transparent 68%
+      );
+  }
+
+  /* Cyan/violet body of light that the 3D core sits inside. */
+  .core-halo {
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgb(63 224 255 / 0.22),
+      rgb(139 124 246 / 0.1) 45%,
+      transparent 70%
+    );
+    animation: halo-breathe 9s ease-in-out infinite;
+  }
+
+  /* Reading progress under the sticky header — pure CSS, no listeners. */
+  .scroll-progress {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* Grab affordance for the 3D surface. `pan-y` keeps the page scrollable
+     when a finger starts on the core; `:active` covers the drag state without
+     routing pointer state back through React. */
+  .core-surface canvas {
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .core-surface canvas:active {
+    cursor: grabbing;
+  }
+
+  /* Fades the endless integration ticker out at both edges. */
+  .ticker-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+  }
+
+  /* --------------------------------------------------------- surfaces -- */
+
+  /* Panel: a graphite plate with a lit top edge and a long, soft shadow. */
+  .panel {
+    position: relative;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    border-radius: 1rem;
+    background-image: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0.045),
+      rgb(255 255 255 / 0.008) 42%,
+      transparent
+    );
+    background-color: rgb(10 12 17 / 0.72);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.05) inset,
+      0 34px 80px -48px rgb(0 0 0 / 0.95);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Hairline that fades out at both ends — a rule, not a border. */
+  .hairline {
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      rgb(63 224 255 / 0.45),
+      transparent
+    );
+  }
+
+  /* ----------------------------------------------------------- buttons -- */
+
+  .btn-primary {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding: 0.9rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #04121a;
+    background-image: linear-gradient(135deg, #7defff, #3fe0ff 46%, #6fd0ff);
+    box-shadow:
+      0 0 0 1px rgb(63 224 255 / 0.5),
+      0 1px 0 0 rgb(255 255 255 / 0.65) inset,
+      0 18px 40px -18px rgb(63 224 255 / 0.65);
+    transition:
+      transform 300ms var(--ease-out-expo),
+      box-shadow 300ms var(--ease-out-expo);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 1px rgb(63 224 255 / 0.8),
+      0 1px 0 0 rgb(255 255 255 / 0.75) inset,
+      0 26px 54px -20px rgb(63 224 255 / 0.8);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background-color: rgb(255 255 255 / 0.02);
+    padding: 0.9rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #c7d3e2;
+    transition:
+      border-color 300ms var(--ease-out-expo),
+      color 300ms var(--ease-out-expo),
+      background-color 300ms var(--ease-out-expo);
+  }
+
+  .btn-ghost:hover {
+    border-color: rgb(63 224 255 / 0.35);
+    background-color: rgb(63 224 255 / 0.06);
+    color: #eef4fb;
+  }
+
+  /* Light sweeps once across the primary button on hover. */
+  .btn-sheen {
+    position: absolute;
+    inset-block: 0;
+    left: -25%;
+    width: 25%;
+    transform: skewX(-12deg);
+    background-color: rgb(255 255 255 / 0.45);
+    filter: blur(10px);
+    transition: transform 750ms var(--ease-out-expo);
+    pointer-events: none;
+  }
+
+  .group:hover .btn-sheen {
+    transform: translateX(560%) skewX(-12deg);
+  }
+
+  /* -------------------------------------------------------------- chips -- */
+
+  .chip {
+    border-radius: 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background-color: rgb(255 255 255 / 0.02);
+    padding: 0.25rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7d8b9f;
+    transition:
+      border-color 300ms var(--ease-out-expo),
+      color 300ms var(--ease-out-expo);
+  }
+
+  .group:hover .chip {
+    border-color: rgb(63 224 255 / 0.25);
+    color: #a8b6c9;
+  }
+
   /* -------------------------------------------------------- type reveal -- */
 
   /*
@@ -176,6 +384,38 @@
       box-shadow: 0 0 0 4px rgb(63 224 255 / 0);
     }
   }
+
+  /* Animates `scale`, never `transform`: the element is positioned with
+     Tailwind's own translate utilities and the two must not fight. */
+  @keyframes halo-breathe {
+    0%,
+    100% {
+      opacity: 0.5;
+      scale: 1;
+    }
+    50% {
+      opacity: 0.95;
+      scale: 1.1;
+    }
+  }
+
+  @keyframes ticker-slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes progress-grow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 }
 
 /* ------------------------------------------------------------ motion -- */
@@ -195,6 +435,18 @@
   /* Cyan status lamp in the instrument strip. */
   .status-lamp {
     animation: status-pulse 2600ms ease-in-out infinite;
+  }
+
+  /* Endless capability ticker: two identical tracks, one shared slide. */
+  .ticker {
+    animation: ticker-slide 38s linear infinite;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress {
+      animation: progress-grow linear both;
+      animation-timeline: scroll(root block);
+    }
   }
 
   /*
