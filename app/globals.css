@@ -170,16 +170,12 @@
     transform-origin: left center;
   }
 
-  /* Grab affordance for the 3D surface. `pan-y` keeps the page scrollable
-     when a finger starts on the core; `:active` covers the drag state without
-     routing pointer state back through React. */
+  /* Crosshair on the 3D surface: it reads as an instrument, not as a
+     grab handle. `pan-y` keeps the page scrollable when a finger starts on
+     the core. */
   .core-surface canvas {
-    cursor: grab;
+    cursor: crosshair;
     touch-action: pan-y;
-  }
-
-  .core-surface canvas:active {
-    cursor: grabbing;
   }
 
   /* Fades the endless integration ticker out at both edges. */

@@ -40,9 +40,10 @@ rather than a marketing page — but one that is lit.
   numbers stay on a grid.
 - **Composition** — the hero is a 12-column grid in which the 3D core breaks
   out of the container: it starts behind the copy column, runs past the right
-  edge and is trimmed by the section's overflow clip. Capability cards use an
-  uneven 5 / 4 / 3 cascade instead of three equal columns, and the workflow is
-  a connected rail rather than four boxes.
+  edge and is trimmed by the section's overflow clip. Capability cards are
+  three identical columns; the hub-and-spoke diagram they used to host now
+  runs as a full-width blueprint band underneath them, and the workflow is a
+  connected rail rather than four boxes.
 - **Depth** — three layers, none of them an image: a fixed `.aurora` field of
   wide cyan/violet light bodies behind the page, a `feTurbulence` grain over
   it, and a breathing halo under the 3D core. Panels are `.panel`: a graphite
@@ -64,9 +65,9 @@ rather than a marketing page — but one that is lit.
   vertical drag tilts it and springs back; the page scroll swings the whole
   assembly; and a tap emits an expanding billboard ring plus an emissive flash.
   A pointer hovering the core adds a small parallax and brightens the rings.
-- **Touch** — the canvas is `touch-action: pan-y`, so a vertical swipe still
-  scrolls the page while a horizontal one rotates the model; the grab cursor
-  comes from `:active`, so no pointer state round-trips through React.
+- **Touch** — the canvas is `touch-action: pan-y` with a crosshair cursor, so
+  a vertical swipe still scrolls the page while a horizontal one rotates the
+  model.
 - **Motion**: no JavaScript choreographs the page. The hero staggers in with
   CSS keyframes and the sections reveal as they enter using the CSS view
   timeline (`animation-timeline: view()`), with a per-element offset into the

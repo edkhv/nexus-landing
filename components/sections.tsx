@@ -397,7 +397,7 @@ function CoreSchematic() {
         letterSpacing="1.4"
         style={{ fontFamily: "var(--font-mono)" }}
       >
-        SCOPE
+        ПРАВА
       </text>
 
       {/* Ruler baseline */}
@@ -420,27 +420,18 @@ const CAPABILITIES = [
     title: "Ядро без привязки к модели",
     body: "Модель меняется одной строкой — контекст, инструменты и проверки остаются на месте. Ценность копится в вашей обвязке, а не в чужом API.",
     tags: ["облако", "приватно", "локально"],
-    span: "lg:col-span-5",
-    offset: "",
-    schematic: true,
   },
   {
     index: "02",
     title: "Инструменты с правами",
-    body: "Тот же принцип, что в n8n и Zapier, только каждый вызов несёт scope, бюджет и трейс. Агент работает с вашими системами и не держит продовых ключей.",
+    body: "Тот же принцип, что в n8n и Zapier, только каждый вызов идёт со своими правами, бюджетом и трассировкой. Агент работает с вашими системами и не держит продовых ключей.",
     tags: ["права", "бюджет", "трейс"],
-    span: "lg:col-span-4",
-    offset: "lg:mt-12",
-    schematic: false,
   },
   {
     index: "03",
     title: "Проверки до релиза",
-    body: "Evals, guardrails и replay прогоняются на каждом изменении — регресс не доходит до пользователя.",
-    tags: ["evals", "guardrails", "replay"],
-    span: "lg:col-span-3",
-    offset: "lg:mt-24",
-    schematic: false,
+    body: "Оценки, ограничения и повтор прогона срабатывают на каждом изменении — регресс не доходит до пользователя.",
+    tags: ["оценки", "ограничения", "повтор"],
   },
 ];
 
@@ -467,16 +458,14 @@ export function Capabilities() {
           </p>
         </SectionHeading>
 
-        {/* Deliberately uneven spans: 5 / 4 / 3, stepping down the page. */}
-        <ul className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:mt-16 lg:grid-cols-12 lg:items-start">
+        {/* Three identical cards: same width, same padding, same rhythm. */}
+        <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {CAPABILITIES.map((item, i) => (
             <li
               key={item.index}
               data-reveal
               style={range(i * 7, 56 + i * 7)}
-              className={`group panel flex flex-col overflow-hidden p-6 transition-colors duration-500 hover:border-cyan-electric/25 md:col-span-1 lg:p-7 ${item.span} ${item.offset} ${
-                item.schematic ? "md:col-span-2" : ""
-              }`}
+              className="group panel flex flex-col overflow-hidden p-6 transition-colors duration-500 hover:border-cyan-electric/25 lg:p-7"
             >
               {/* Cyan hairline lights up along the top edge on hover. */}
               <span
@@ -506,23 +495,47 @@ export function Capabilities() {
                 {item.body}
               </p>
 
-              {/* Concrete spec chips: real surface area, not adjectives. */}
-              <ul className="relative mt-6 flex flex-wrap gap-2">
+              {/* Concrete spec chips: real surface area, not adjectives.
+                  Pinned to the bottom so the row shares one baseline. */}
+              <ul className="relative mt-auto flex flex-wrap gap-2 pt-6">
                 {item.tags.map((tag) => (
                   <li key={tag} className="chip">
                     {tag}
                   </li>
                 ))}
               </ul>
-
-              {item.schematic ? (
-                <div className="relative mt-7 border-t border-white/5 pt-6">
-                  <CoreSchematic />
-                </div>
-              ) : null}
             </li>
           ))}
         </ul>
+
+        {/*
+          The hub-and-spoke diagram used to live inside the first card and
+          forced the row out of shape. It now runs as a full-width blueprint
+          band under three cards of exactly the same size.
+        */}
+        <div
+          data-reveal
+          style={range(8, 58)}
+          className="panel mt-4 overflow-hidden p-6 lg:p-8"
+        >
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14">
+            <div className="lg:w-[32%]">
+              <p className="font-mono text-[0.66rem] tracking-[0.28em] text-cyan-electric uppercase">
+                Схема ядра
+              </p>
+              <h3 className="mt-4 text-lg font-bold tracking-[-0.015em] text-slate-100">
+                Один слой, много инструментов
+              </h3>
+              <p className="mt-3 max-w-[38ch] text-sm leading-relaxed text-slate-400">
+                Ядро держит контекст, раздаёт права и собирает трейсы. Модель и
+                внешние системы подключаются к нему как модули.
+              </p>
+            </div>
+            <div className="lg:max-w-[560px] lg:flex-1 lg:ml-auto">
+              <CoreSchematic />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
